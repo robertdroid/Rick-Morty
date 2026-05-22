@@ -86,9 +86,9 @@ fun CharacterImage(
         contentDescription = "Image of $characterName",
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(200.dp)
             .clip(RoundedCornerShape(8.dp)),
-        contentScale = ContentScale.FillHeight,
+        contentScale = ContentScale.Crop,
         placeholder = painterResource(id = R.drawable.placeholder_character),
         error = painterResource(id = R.drawable.error_character)
     )
