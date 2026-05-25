@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,21 +28,18 @@ import net.devrob.arkanotest.presentation.components.LoadingState
 @Composable
 fun CharactersContent(
     characters: LazyPagingItems<Character>,
-    modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchState: CharactersSearchState,
+    onLoadedCharacterChanged: (List<Character>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val refreshState = characters.loadState.refresh
     val isRefreshing = refreshState is LoadState.Loading
-    val isSearchActive = searchQuery.isNotBlank()
 
-    val filteredCharacters = remember(searchQuery, characters.itemSnapshotList) {
-        if (isSearchActive) {
-            characters.itemSnapshotList.items.filter { character ->
-                character.name.contains(searchQuery, ignoreCase = true)
+    LaunchedEffect(characters) {
+        snapshotFlow { characters.itemSnapshotList.items }
+            .collect { items ->
+                onLoadedCharacterChanged(items)
             }
-        } else {
-            emptyList()
-        }
     }
 
     when {
@@ -55,15 +54,15 @@ fun CharactersContent(
                 modifier = modifier
             )
         }
-        isSearchActive && filteredCharacters.isEmpty() -> {
+        searchState is CharactersSearchState.Active && searchState.isEmpty -> {
             EmptySearchState(
-                query = searchQuery,
+                query = searchState.query,
                 modifier = modifier
             )
         }
-        isSearchActive -> {
+        searchState is CharactersSearchState.Active -> {
             FilteredCharacterList(
-                characters = filteredCharacters,
+                characters = searchState.results,
                 modifier = modifier
             )
         }

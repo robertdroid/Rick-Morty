@@ -21,6 +21,7 @@ import net.devrob.arkanotest.testutil.CharacterTestFactory
 
 @RunWith(AndroidJUnit4::class)
 class CharactersScreenTest {
+
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -37,7 +38,11 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             ArkanoTestTheme {
                 val characters = flowOf(loadingPagingData).collectAsLazyPagingItems()
-                CharactersContent(characters = characters)
+                CharactersContent(
+                    characters = characters,
+                    searchState = CharactersSearchState.Active("", emptyList()),
+                    onLoadedCharacterChanged = {}
+                )
             }
         }
 
@@ -60,7 +65,11 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             ArkanoTestTheme {
                 val characters = flowOf(errorPagingData).collectAsLazyPagingItems()
-                CharactersContent(characters = characters)
+                CharactersContent(
+                    characters = characters,
+                    searchState = CharactersSearchState.Active("", emptyList()),
+                    onLoadedCharacterChanged = {}
+                )
             }
         }
 
@@ -87,7 +96,11 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             ArkanoTestTheme {
                 val characters = flowOf(errorPagingData).collectAsLazyPagingItems()
-                CharactersContent(characters = characters)
+                CharactersContent(
+                    characters = characters,
+                    searchState = CharactersSearchState.Active("", emptyList()),
+                    onLoadedCharacterChanged = {}
+                )
             }
         }
 
@@ -116,7 +129,11 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             ArkanoTestTheme {
                 val pagingItems = flowOf(successPagingData).collectAsLazyPagingItems()
-                CharactersContent(characters = pagingItems)
+                CharactersContent(
+                    characters = pagingItems,
+                    searchState = CharactersSearchState.Active("", emptyList()),
+                    onLoadedCharacterChanged = {}
+                )
             }
         }
 
@@ -152,7 +169,11 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             ArkanoTestTheme {
                 val pagingItems = flowOf(successPagingData).collectAsLazyPagingItems()
-                CharactersContent(characters = pagingItems)
+                CharactersContent(
+                    characters = pagingItems,
+                    searchState = CharactersSearchState.Active("", emptyList()),
+                    onLoadedCharacterChanged = {}
+                )
             }
         }
 

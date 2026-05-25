@@ -24,7 +24,7 @@ fun CharactersScreen(
 ) {
     val characters = viewModel.charactersPagingData.collectAsLazyPagingItems()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val debounceQuery by viewModel.debounceSearchQuery.collectAsStateWithLifecycle()
+    val searchState by viewModel.searchState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -48,7 +48,8 @@ fun CharactersScreen(
             )
             CharactersContent(
                 characters = characters,
-                searchQuery = debounceQuery,
+                searchState = searchState,
+                onLoadedCharacterChanged = viewModel::updateLoadedCharacters,
                 modifier = Modifier.fillMaxSize()
             )
         }
