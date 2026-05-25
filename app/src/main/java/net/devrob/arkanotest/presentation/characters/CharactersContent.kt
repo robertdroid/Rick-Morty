@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,16 +19,29 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import net.devrob.arkanotest.domain.model.Character
 import net.devrob.arkanotest.presentation.components.CharacterItem
+import net.devrob.arkanotest.presentation.components.EmptySearchState
 import net.devrob.arkanotest.presentation.components.ErrorState
 import net.devrob.arkanotest.presentation.components.LoadingState
 
 @Composable
 fun CharactersContent(
     characters: LazyPagingItems<Character>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
     val refreshState = characters.loadState.refresh
     val isRefreshing = refreshState is LoadState.Loading
+    val isSearchActive = searchQuery.isNotBlank()
+
+    val filteredCharacters = remember(searchQuery, characters.itemSnapshotList) {
+        if (isSearchActive) {
+            characters.itemSnapshotList.items.filter { character ->
+                character.name.contains(searchQuery, ignoreCase = true)
+            }
+        } else {
+            emptyList()
+        }
+    }
 
     when {
         refreshState is LoadState.Loading && characters.itemCount == 0 -> {
@@ -37,6 +52,18 @@ fun CharactersContent(
             ErrorState(
                 message = error.localizedMessage ?: "An unexpected error occurred",
                 onRetry = { characters.retry() },
+                modifier = modifier
+            )
+        }
+        isSearchActive && filteredCharacters.isEmpty() -> {
+            EmptySearchState(
+                query = searchQuery,
+                modifier = modifier
+            )
+        }
+        isSearchActive -> {
+            FilteredCharacterList(
+                characters = filteredCharacters,
                 modifier = modifier
             )
         }
@@ -87,6 +114,25 @@ fun CharactersContent(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FilteredCharacterList(
+    characters: List<Character>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(
+            items = characters,
+            key = { it.id }
+        ) { character ->
+            CharacterItem(character = character)
         }
     }
 }
