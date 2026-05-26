@@ -40,9 +40,11 @@ import net.devrob.arkanotest.domain.model.CharacterStatus
 @Composable
 fun CharacterItem(
     character: Character,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .fillMaxWidth()
@@ -102,7 +104,8 @@ fun CharacterListItemPreview() {
         contentAlignment = Alignment.Center
     ) {
         CharacterItem(
-            Character(
+            onClick = {},
+            character = Character(
                 id = 1,
                 name = "Character Name",
                 status = CharacterStatus.UNKNOWN,

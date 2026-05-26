@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import net.devrob.arkanotest.presentation.characterdetail.CharacterDetailScreen
 import net.devrob.arkanotest.presentation.characters.CharactersScreen
 
 @Composable
@@ -22,7 +23,17 @@ fun NavigationWrapper() {
             ),
         entryProvider = entryProvider {
             entry<Routes.Characters> {
-                CharactersScreen()
+                CharactersScreen(
+                    onCharacterClick = { characterId ->
+                        backstack.navigateTo(Routes.CharacterDetails(characterId))
+                    }
+                )
+            }
+            entry<Routes.CharacterDetails> { key ->
+                CharacterDetailScreen(
+                    characterId = key.id,
+                    onNavigateBack = { backstack.navigateBack() }
+                )
             }
         }
     )

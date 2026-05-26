@@ -7,6 +7,11 @@ fun NavBackStack<NavKey>.navigateTo(screen: NavKey) {
     add(screen)
 }
 
+fun NavBackStack<NavKey>.navigateBack() {
+    if (isEmpty()) return
+    removeLastOrNull()
+}
+
 fun NavBackStack<NavKey>.navigateBackTo(screen: NavKey) {
     if (isEmpty()) return
     if (screen !in this) return

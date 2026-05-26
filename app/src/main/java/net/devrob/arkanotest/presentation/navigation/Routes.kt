@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 sealed class Routes: NavKey {
 
     @Serializable data object Characters: Routes()
+
+    @Serializable data class CharacterDetails(val id: Int) : Routes()
 }

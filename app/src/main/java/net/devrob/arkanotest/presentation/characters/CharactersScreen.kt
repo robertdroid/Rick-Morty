@@ -20,6 +20,7 @@ import net.devrob.arkanotest.presentation.components.SearchTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersScreen(
+    onCharacterClick: (Int) -> Unit,
     viewModel: CharactersViewModel = hiltViewModel()
 ) {
     val characters = viewModel.charactersPagingData.collectAsLazyPagingItems()
@@ -49,6 +50,7 @@ fun CharactersScreen(
             CharactersContent(
                 characters = characters,
                 searchState = searchState,
+                onCharacterClick = onCharacterClick,
                 onLoadedCharacterChanged = viewModel::updateLoadedCharacters,
                 modifier = Modifier.fillMaxSize()
             )

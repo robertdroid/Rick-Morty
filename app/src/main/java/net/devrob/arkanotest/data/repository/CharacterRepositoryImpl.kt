@@ -4,9 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import net.devrob.arkanotest.data.mapper.toCharacterDetail
 import net.devrob.arkanotest.data.paging.CharacterPagingSource
 import net.devrob.arkanotest.data.remote.api.CharacterApiService
 import net.devrob.arkanotest.domain.model.Character
+import net.devrob.arkanotest.domain.model.CharacterDetail
 import net.devrob.arkanotest.domain.repository.CharacterRepository
 import javax.inject.Inject
 
@@ -24,5 +26,9 @@ class CharacterRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = { CharacterPagingSource(apiService) }
         ).flow
+    }
+
+    override suspend fun getCharacterById(id: Int): CharacterDetail {
+        return apiService.getCharacterById(id).toCharacterDetail()
     }
 }

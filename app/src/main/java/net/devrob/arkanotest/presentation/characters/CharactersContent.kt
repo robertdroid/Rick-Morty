@@ -29,6 +29,7 @@ import net.devrob.arkanotest.presentation.components.LoadingState
 fun CharactersContent(
     characters: LazyPagingItems<Character>,
     searchState: CharactersSearchState,
+    onCharacterClick: (Int) -> Unit,
     onLoadedCharacterChanged: (List<Character>) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -63,6 +64,7 @@ fun CharactersContent(
         searchState is CharactersSearchState.Active -> {
             FilteredCharacterList(
                 characters = searchState.results,
+                onCharacterClick = onCharacterClick,
                 modifier = modifier
             )
         }
@@ -82,7 +84,10 @@ fun CharactersContent(
                         key = { index -> characters[index]?.id ?: index }
                     ) { index ->
                         characters[index]?.let { character ->
-                            CharacterItem(character = character)
+                            CharacterItem(
+                                character = character,
+                                onClick = { onCharacterClick(character.id) }
+                            )
                         }
                     }
 
@@ -120,6 +125,7 @@ fun CharactersContent(
 @Composable
 private fun FilteredCharacterList(
     characters: List<Character>,
+    onCharacterClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -131,7 +137,10 @@ private fun FilteredCharacterList(
             items = characters,
             key = { it.id }
         ) { character ->
-            CharacterItem(character = character)
+            CharacterItem(
+                character = character,
+                onClick = { onCharacterClick(character.id) }
+            )
         }
     }
 }
